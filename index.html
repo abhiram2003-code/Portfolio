@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abhiram P — Security Portfolio</title>
+<meta name="description" content="Abhiram P — Cyber Security M.Tech student. Network security, SIEM, secure application development.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0F14;
+    --panel:#111823;
+    --panel-line:#1F2B39;
+    --paper:#EDEAE2;
+    --paper-dim:#A9B4BE;
+    --amber:#F2A65A;
+    --teal:#4FA39B;
+    --red:#D9634F;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'IBM Plex Sans', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  a{color:inherit;}
+  ::selection{background:var(--amber); color:var(--ink);}
+
+  /* scanline texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+    z-index:1000;
+  }
+
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:100;
+    background:rgba(11,15,20,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .topbar-inner{
+    max-width:920px; margin:0 auto; padding:14px 24px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--mono); font-size:12px; letter-spacing:0.06em;
+  }
+  .topbar-left{color:var(--teal); display:flex; align-items:center; gap:8px;}
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal); animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+  .topbar-nav{display:flex; gap:20px;}
+  .topbar-nav a{text-decoration:none; color:var(--paper-dim); text-transform:uppercase; transition:color .15s;}
+  .topbar-nav a:hover{color:var(--amber);}
+  @media (max-width:640px){ .topbar-nav{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{padding:88px 0 64px; position:relative;}
+  .hero-eyebrow{
+    font-family:var(--mono); font-size:12px; color:var(--amber);
+    letter-spacing:0.12em; text-transform:uppercase;
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .hero-eyebrow::before{content:"[ "; color:var(--panel-line);}
+  .hero-eyebrow::after{content:" ]"; color:var(--panel-line);}
+  .hero h1{
+    font-family:var(--mono); font-weight:800;
+    font-size:clamp(34px, 6vw, 58px);
+    line-height:1.05; letter-spacing:-0.01em;
+    color:var(--paper);
+  }
+  .hero h1 .cursor{
+    display:inline-block; width:0.5em; background:var(--amber);
+    animation:blink 1s step-end infinite; margin-left:4px;
+  }
+  @keyframes blink{50%{opacity:0;}}
+  .hero-sub{
+    margin-top:20px; max-width:560px; color:var(--paper-dim); font-size:16px;
+  }
+  .hero-role{color:var(--teal); font-family:var(--mono); font-weight:600;}
+  .hero-links{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono); font-size:13px; letter-spacing:0.03em;
+    padding:11px 18px; border:1px solid var(--panel-line); border-radius:2px;
+    text-decoration:none; color:var(--paper); transition:all .15s; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn:hover{border-color:var(--amber); color:var(--amber); transform:translateY(-1px);}
+  .btn.primary{background:var(--amber); color:var(--ink); border-color:var(--amber); font-weight:700;}
+  .btn.primary:hover{background:transparent; color:var(--amber);}
+
+  /* terminal card in hero */
+  .term{
+    margin-top:56px;
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:6px;
+    overflow:hidden; box-shadow:0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px; padding:10px 14px;
+    border-bottom:1px solid var(--panel-line); background:rgba(255,255,255,0.02);
+  }
+  .term-dot{width:10px; height:10px; border-radius:50%;}
+  .term-body{
+    font-family:var(--mono); font-size:13px; padding:20px; color:#B9C4CF;
+    white-space:pre-wrap;
+  }
+  .term-body .prompt{color:var(--teal);}
+  .term-body .key{color:var(--amber);}
+  .term-body .val{color:var(--paper);}
+
+  /* ---------- section shell ---------- */
+  section{padding:64px 0; border-top:1px solid var(--panel-line);}
+  .sec-head{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:36px;
+  }
+  .sec-num{font-family:var(--mono); color:var(--panel-line); font-size:13px;}
+  .sec-title{
+    font-family:var(--mono); font-weight:700; font-size:22px;
+    text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .sec-line{flex:1; height:1px; background:var(--panel-line);}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:40px;}
+  @media (max-width:720px){.about-grid{grid-template-columns:1fr;}}
+  .about-text p{color:var(--paper-dim); margin-bottom:14px;}
+  .about-text strong{color:var(--paper); font-weight:600;}
+  .field-list{font-family:var(--mono); font-size:13px;}
+  .field-row{
+    display:flex; justify-content:space-between; padding:9px 0;
+    border-bottom:1px dashed var(--panel-line); color:var(--paper-dim);
+  }
+  .field-row span:last-child{color:var(--paper); text-align:right;}
+
+  /* ---------- skills ---------- */
+  .skill-groups{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:720px){.skill-groups{grid-template-columns:1fr 1fr;}}
+  @media (max-width:480px){.skill-groups{grid-template-columns:1fr;}}
+  .skill-card{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:6px; padding:18px;
+  }
+  .skill-card h3{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--teal); margin-bottom:12px;
+  }
+  .chip-row{display:flex; flex-wrap:wrap; gap:7px;}
+  .chip{
+    font-family:var(--mono); font-size:11.5px; padding:4px 9px;
+    background:rgba(255,255,255,0.03); border:1px solid var(--panel-line); border-radius:3px; color:var(--paper-dim);
+  }
+
+  /* ---------- experience ---------- */
+  .exp-item{
+    display:grid; grid-template-columns:150px 1fr; gap:24px; padding:22px 0;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .exp-item:last-child{border-bottom:none;}
+  @media (max-width:640px){.exp-item{grid-template-columns:1fr; gap:8px;}}
+  .exp-date{font-family:var(--mono); font-size:12px; color:var(--paper-dim);}
+  .exp-role{font-weight:600; font-size:16px; margin-bottom:2px;}
+  .exp-org{color:var(--teal); font-family:var(--mono); font-size:12.5px; margin-bottom:10px;}
+  .exp-item ul{padding-left:18px; color:var(--paper-dim); font-size:14.5px;}
+  .exp-item li{margin-bottom:5px;}
+
+  /* ---------- projects (incident-report style cards) ---------- */
+  .proj-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:720px){.proj-grid{grid-template-columns:1fr;}}
+  .proj-card{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:6px;
+    padding:20px; position:relative; transition:border-color .15s, transform .15s;
+  }
+  .proj-card:hover{border-color:var(--amber); transform:translateY(-2px);}
+  .proj-id{
+    font-family:var(--mono); font-size:11px; color:var(--panel-line); letter-spacing:0.04em; margin-bottom:8px;
+  }
+  .proj-id .n{color:var(--amber);}
+  .proj-title{font-weight:700; font-size:16.5px; margin-bottom:10px;}
+  .proj-desc{color:var(--paper-dim); font-size:14px; margin-bottom:14px;}
+  .proj-tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .tag{font-family:var(--mono); font-size:10.5px; padding:3px 7px; border:1px solid var(--panel-line); border-radius:3px; color:var(--paper-dim);}
+  .proj-status{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.05em;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .proj-status .sq{width:8px; height:8px; border-radius:1px;}
+  .status-done .sq{background:var(--teal);}
+  .status-done{color:var(--teal);}
+
+  /* ---------- education ---------- */
+  .edu-item{display:flex; justify-content:space-between; gap:20px; padding:16px 0; border-bottom:1px dashed var(--panel-line);}
+  .edu-item:last-child{border-bottom:none;}
+  .edu-item .l strong{display:block; font-size:15px;}
+  .edu-item .l span{color:var(--paper-dim); font-size:13px;}
+  .edu-item .r{font-family:var(--mono); font-size:12.5px; color:var(--paper-dim); text-align:right; white-space:nowrap;}
+
+  /* ---------- contact / footer ---------- */
+  .contact-panel{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:6px;
+    padding:32px; text-align:center;
+  }
+  .contact-panel h2{font-family:var(--mono); font-size:22px; margin-bottom:10px;}
+  .contact-panel p{color:var(--paper-dim); margin-bottom:22px; font-size:14.5px;}
+  .contact-links{display:flex; justify-content:center; gap:14px; flex-wrap:wrap;}
+  footer{
+    padding:28px 0 40px; text-align:center; font-family:var(--mono); font-size:11.5px; color:var(--panel-line);
+  }
+  .lang-row{display:flex; gap:10px; justify-content:center; margin-top:6px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left"><span class="dot"></span> STATUS: OPEN TO WORK</div>
+    <nav class="topbar-nav">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-eyebrow">whoami</div>
+    <h1>Abhiram P<span class="cursor">&nbsp;</span></h1>
+    <p class="hero-sub">
+      <span class="hero-role">M.Tech Cyber Security</span> student at CUSAT, building secure
+      applications and digging into network defence, SIEM and API security.
+      Looking for roles in SOC analysis, network security and security engineering.
+    </p>
+    <div class="hero-links">
+      <a class="btn primary" href="mailto:code.abhiramp@gmail.com">Email me</a>
+      <a class="btn" href="https://www.linkedin.com/in/abhiram-pulliyampatta" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="#" id="githubLink" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="#projects">View projects ↓</a>
+    </div>
+
+    <div class="term">
+      <div class="term-bar">
+        <span class="term-dot" style="background:#D9634F"></span>
+        <span class="term-dot" style="background:#F2A65A"></span>
+        <span class="term-dot" style="background:#4FA39B"></span>
+      </div>
+      <div class="term-body"><span class="prompt">abhiram@sec:~$</span> cat profile.yaml
+
+<span class="key">role:</span> <span class="val">Cyber Security M.Tech Student</span>
+<span class="key">institute:</span> <span class="val">School of Engineering, CUSAT (2025–27)</span>
+<span class="key">stack:</span> <span class="val">Python · MERN · Linux</span>
+<span class="key">focus:</span> <span class="val">network security, SIEM, PKI, API security, cloud security</span>
+<span class="key">languages:</span> <span class="val">English, Hindi, Malayalam</span>
+
+<span class="prompt">abhiram@sec:~$</span> <span style="opacity:.5">_</span></div>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">About</span><span class="sec-line"></span></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm an <strong>M.Tech Cyber Security</strong> student at CUSAT with hands-on experience across
+        Python, Linux, networking and full-stack development. My interests sit at the intersection of
+        <strong>network security, SIEM, PKI, API security and cloud security</strong> — I like understanding
+        systems well enough to know both how to build them and how they break.</p>
+        <p>Before this, I completed a full stack internship building a production-style MERN application,
+        and I've since focused on security-first projects: threat-aware application design, secure file
+        handling and API gateway hardening.</p>
+      </div>
+      <div class="field-list">
+        <div class="field-row"><span>Location</span><span>Kerala, India</span></div>
+        <div class="field-row"><span>Degree</span><span>M.Tech CSE (Cyber Security)</span></div>
+        <div class="field-row"><span>Institute</span><span>CUSAT</span></div>
+        <div class="field-row"><span>Timeline</span><span>2025 – 2027</span></div>
+        <div class="field-row"><span>Seeking</span><span>SOC / Sec. Engineer</span></div>
+        <div class="field-row"><span>Contact</span><span>code.abhiramp@gmail.com</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Skills</span><span class="sec-line"></span></div>
+    <div class="skill-groups">
+      <div class="skill-card">
+        <h3>Languages</h3>
+        <div class="chip-row">
+          <span class="chip">Python</span><span class="chip">Java</span><span class="chip">C</span>
+          <span class="chip">JavaScript</span><span class="chip">SQL</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Frameworks</h3>
+        <div class="chip-row">
+          <span class="chip">React</span><span class="chip">Express</span><span class="chip">Node.js</span>
+          <span class="chip">Flutter</span><span class="chip">Flet</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Security Tools</h3>
+        <div class="chip-row">
+          <span class="chip">Wireshark</span><span class="chip">Burp Suite</span><span class="chip">Nmap</span>
+          <span class="chip">Metasploit</span><span class="chip">Kali Linux</span><span class="chip">IDS/IPS</span>
+          <span class="chip">SIEM</span><span class="chip">OWASP Top 10</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Tools &amp; DB</h3>
+        <div class="chip-row">
+          <span class="chip">MongoDB</span><span class="chip">Git/GitHub</span><span class="chip">VS Code</span>
+          <span class="chip">Selenium</span><span class="chip">BeautifulSoup</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Operating Systems</h3>
+        <div class="chip-row">
+          <span class="chip">Linux</span><span class="chip">macOS</span><span class="chip">Windows</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Languages Spoken</h3>
+        <div class="chip-row">
+          <span class="chip">English</span><span class="chip">Hindi</span><span class="chip">Malayalam</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Experience</span><span class="sec-line"></span></div>
+    <div class="exp-item">
+      <div class="exp-date">Jan 2025 – Mar 2025</div>
+      <div>
+        <div class="exp-role">Full Stack Intern</div>
+        <div class="exp-org">ICT, Kozhikode</div>
+        <ul>
+          <li>Developed a MERN stack job portal with separate employer and job-seeker workflows.</li>
+          <li>Designed a responsive UI using React, Tailwind CSS, Bulma and Material UI.</li>
+          <li>Integrated Clerk authentication and MongoDB Atlas for secure user management.</li>
+          <li>Reduced manual recruitment effort by automating job posting and application tracking.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Projects</span><span class="sec-line"></span></div>
+    <div class="proj-grid">
+
+      <div class="proj-card">
+        <div class="proj-id">PROJ-<span class="n">004</span> · SECURITY TOOLING</div>
+        <div class="proj-title">File Upload Validator</div>
+        <div class="proj-desc">A layered file-upload validation tool that catches disguised executables, path traversal and embedded scripts before a file is accepted.</div>
+        <div class="proj-tags">
+          <span class="tag">Python</span><span class="tag">Magic-byte detection</span>
+          <span class="tag">Zip-slip protection</span><span class="tag">ClamAV (optional)</span>
+        </div>
+        <div class="proj-status status-done"><span class="sq"></span>Complete</div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-id">PROJ-<span class="n">003</span> · MACHINE LEARNING</div>
+        <div class="proj-title">Electric Load Forecasting</div>
+        <div class="proj-desc">Hybrid ML/deep-learning system forecasting electricity load from historical consumption, temperature and humidity data.</div>
+        <div class="proj-tags">
+          <span class="tag">LSTM</span><span class="tag">XGBoost</span><span class="tag">Random Forest</span>
+          <span class="tag">Pandas</span>
+        </div>
+        <div class="proj-status status-done"><span class="sq"></span>Complete</div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-id">PROJ-<span class="n">002</span> · FULL STACK</div>
+        <div class="proj-title">JobShala — Job Portal</div>
+        <div class="proj-desc">Full-stack MERN job portal with role-based dashboards, CRUD job listings, and application tracking.</div>
+        <div class="proj-tags">
+          <span class="tag">MongoDB</span><span class="tag">Express</span><span class="tag">React</span>
+          <span class="tag">Clerk Auth</span>
+        </div>
+        <div class="proj-status status-done"><span class="sq"></span>Complete</div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-id">PROJ-<span class="n">001</span> · SOCIAL IMPACT</div>
+        <div class="proj-title">RESQ — Food Waste Management</div>
+        <div class="proj-desc">A resource optimisation platform connecting restaurants with orphanages and shelters via auction-based surplus food allocation.</div>
+        <div class="proj-tags">
+          <span class="tag">Python</span><span class="tag">Flet</span><span class="tag">SQLite</span>
+        </div>
+        <div class="proj-status status-done"><span class="sq"></span>Complete</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">Education</span><span class="sec-line"></span></div>
+    <div class="edu-item">
+      <div class="l"><strong>M.Tech, Computer Science &amp; Engineering (Cyber Security)</strong><span>School of Engineering, CUSAT</span></div>
+      <div class="r">2025 – 2027</div>
+    </div>
+    <div class="edu-item">
+      <div class="l"><strong>B.Tech, Computer Science &amp; Engineering</strong><span>Ahalia School of Engineering and Technology · CGPA 7.22</span></div>
+      <div class="r">2021 – 2025</div>
+    </div>
+    <div class="edu-item">
+      <div class="l"><strong>Higher Secondary</strong><span>Bharatha Matha Higher Secondary School · 90%</span></div>
+      <div class="r">2020 – 2021</div>
+    </div>
+    <div class="edu-item">
+      <div class="l"><strong>S.S.L.C (ICSE)</strong><span>Seventh-Day Adventist Higher Secondary School · 80%</span></div>
+      <div class="r">2018 – 2019</div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="sec-head"><span class="sec-num">06</span><span class="sec-title">Contact</span><span class="sec-line"></span></div>
+    <div class="contact-panel">
+      <h2>Let's talk security.</h2>
+      <p>Open to SOC analyst, network security and security engineering roles.</p>
+      <div class="contact-links">
+        <a class="btn primary" href="mailto:code.abhiramp@gmail.com">code.abhiramp@gmail.com</a>
+        <a class="btn" href="https://www.linkedin.com/in/abhiram-pulliyampatta" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    LAST UPDATED: <span id="lastUpdated"></span> · BUILT WITH HTML/CSS/JS · HOSTED ON GITHUB PAGES
+  </footer>
+
+</div>
+
+<script>
+  document.getElementById('lastUpdated').textContent = new Date().toISOString().slice(0,10);
+  // Update this with your actual GitHub profile URL
+  document.getElementById('githubLink').href = "https://github.com/abhiram2003-code";
+</script>
+
+</body>
+</html>
